@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>To-Do App</title>
+  <style>
+    .blob {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background-image: url("images/todo.jpg");
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      animation: blob 15s infinite ease-in-out;
+      filter: blur(80px);
+      z-index: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    @media (min-width: 640px) {
+      .blob {
+        width: 400px;
+        height: 400px;
+      }
+    }
+
+    @keyframes blob {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      33% {
+        transform: translate(-40%, -60%) scale(1.2);
+      }
+      66% {
+        transform: translate(-60%, -40%) scale(0.8);
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 1s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('images/todo.jpg');">
+
+  <!-- Dark overlay -->
+  <div class="absolute inset-0 bg-black bg-opacity-70 z-0"></div>
+
+  <!-- Blob background -->
+  <div class="blob"></div>
+
+  <!-- Logo Only -->
+  <header class="relative z-10 px-6 py-4">
+    <div class="text-white text-xl font-bold">ToDo<span class="text-primary-400">App</span></div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
+    <h1 class="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg leading-tight fade-in-up">
+      Stay Organized, Stay Productive
+    </h1>
+    <p class="text-white text-lg sm:text-xl mb-8 opacity-80 fade-in-up" style="animation-delay: 0.3s;">
+      Manage your tasks with ease and clarity.
+    </p>
+     <a href="todo.html">
+      <button class="px-6 sm:px-8 py-3 sm:py-4 bg-white text-gray-800 font-semibold rounded-full shadow-lg hover:bg-gray-100 hover:scale-105 transition transform duration-300 text-sm sm:text-base fade-in-up" style="animation-delay: 0.6s;">
+        Get Started
+      </button>
+    </a>
+  </div>
+
+</body>
+</html>

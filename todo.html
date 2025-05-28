@@ -1,0 +1,165 @@
+<!doctype html>
+<html class="transition-colors duration-300">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalist To-Do</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html {
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    .task-item {
+      transition: all 0.3s ease;
+    }
+    .task-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .completed {
+      position: relative;
+    }
+    .completed::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: #9ca3af;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: strike 0.3s ease-out forwards;
+    }
+    @keyframes strike {
+      to { transform: scaleX(1); }
+    }
+    .priority-high {
+      border-left: 4px solid #ef4444;
+    }
+    .priority-medium {
+      border-left: 4px solid #f59e0b;
+    }
+    .priority-low {
+      border-left: 4px solid #10b981;
+    }
+    .drag-handle {
+      cursor: move;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    .drag-handle:hover {
+      opacity: 1;
+    }
+    .dragging {
+      opacity: 0.8;
+      transform: scale(1.02);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-white min-h-screen transition-colors duration-300">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-full md:max-w-2xl">
+    <button
+          type="button"
+          onclick="window.location.href='index.html';"
+          class="inline-block"
+          aria-label="Go to Todo"
+>
+  <div class="w-10 h-10 bg-gray-200 flex items-center justify-center rounded-full shadow hover:scale-105 transition bg-cover bg-center"
+       style="background-image: url('img/back.png');">
+    <i class="fas fa-arrow-left text-xl text-gray-700"></i>
+  </div>
+</button>
+    <header class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mb-8">
+      <h1 class="text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-gray-100 text-center sm:text-left">
+        <span class="text-primary-600">Todo List</span> 
+      </h1>
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2">
+          <span id="streak-count" class="text-sm font-medium text-gray-500 dark:text-gray-400">🔥 3</span>
+          <span id="stats" class="text-sm font-medium text-gray-500 dark:text-gray-400">✓ 5/10</span>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <i id="theme-icon" class="fas fa-moon text-gray-600 dark:text-yellow-300 transition-transform duration-300"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mb-6 relative">
+      <input id="task-input" type="text"
+        class="task-input w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-dark-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+        placeholder="What needs to be done?">
+      <div id="priority-selector" class="absolute right-3 top-3 hidden sm:flex gap-1">
+        <button class="priority-btn p-1 text-red-500 hover:bg-red-50 rounded" data-priority="high">
+          <i class="fas fa-exclamation"></i>
+        </button>
+        <button class="priority-btn p-1 text-yellow-500 hover:bg-yellow-50 rounded" data-priority="medium">
+          <i class="fas fa-equals"></i>
+        </button>
+        <button class="priority-btn p-1 text-green-500 hover:bg-green-50 rounded" data-priority="low">
+          <i class="fas fa-arrow-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-2 justify-between mb-4 text-sm font-medium">
+      <div class="flex gap-2 flex-wrap">
+        <button id="filter-all" class="filter-btn px-3 py-1 rounded-full bg-primary-600 text-white">All</button>
+        <button id="filter-active"
+          class="filter-btn px-3 py-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">Active</button>
+        <button id="filter-completed"
+          class="filter-btn px-3 py-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">Completed</button>
+      </div>
+      <button id="clear-completed"
+        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+        Clear completed
+      </button>
+    </div>
+
+    <div id="task-list" class="space-y-2">
+      
+    </div>
+
+    <div id="empty-state" class="text-center py-12 opacity-70">
+      <i class="fas fa-check-circle text-4xl text-gray-300 mb-3"></i>
+      <p class="text-gray-500">No tasks yet. Add one above!</p>
+    </div>
+  </div>
+    
+
+  <script src="index.js"></script>
+</body>
+</html>
